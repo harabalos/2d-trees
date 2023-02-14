@@ -133,6 +133,68 @@ public class TwoDTree{
         //if the tagret point is not found, return false
         return false;
     }
-    
 
+
+
+
+    public Point nearestNeighbor(Point p) {
+        if (head == null) {
+            return null;
+        }
+    
+        return nearestNeighbor(head, p, head.data);
+    }
+    
+    private Point nearestNeighbor(TreeNode node, Point p, Point best) {
+        if (node == null) {
+            return best;
+        }
+    
+        double distToBest = p.distanceTo(best);
+        double distToNode = p.distanceTo(node.data);
+    
+        if (distToNode < distToBest) {
+            best = node.data;
+        }
+    
+        if (node.l == null && node.r == null) {
+            return best;
+        }
+    
+        if (node.l == null || (node.r != null && node.r.data.squareDistanceTo(p) < node.l.data.squareDistanceTo(p))) {
+            best = nearestNeighbor(node.r, p, best);
+            if (node.l != null && node.l.data.squareDistanceTo(p) < best.squareDistanceTo(p)) {
+                best = nearestNeighbor(node.l, p, best);
+            }
+        } else {
+            best = nearestNeighbor(node.l, p, best);
+            if (node.r != null && node.r.data.squareDistanceTo(p) < best.squareDistanceTo(p)) {
+                best = nearestNeighbor(node.r, p, best);
+            }
+        }
+    
+        return best;
+    }
+
+
+
+
+    public static void main(String[] args) {
+        TwoDTree tdt = new TwoDTree();
+        Point p1 = new Point(5, 4);
+        Point p2 = new Point(2, 6);
+        Point p3 = new Point(13, 3);
+        Point p4 = new Point(8, 7);
+        Point p5 = new Point(3, 1);
+        Point p6 = new Point(10, 2);
+        Point p7 = new Point(3, 0);
+
+        tdt.insert(p1);
+        tdt.insert(p2);
+        tdt.insert(p3);
+        tdt.insert(p4);
+        tdt.insert(p5);
+        tdt.insert(p6);
+
+    }
 }

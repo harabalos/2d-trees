@@ -138,43 +138,56 @@ public class TwoDTree{
 
 
     public Point nearestNeighbor(Point p) {
+        //if the tree is empty, return null
         if (head == null) {
             return null;
         }
-    
+        
+        //cal the private helper function starting at the root node and using the root as the initial best point
         return nearestNeighbor(head, p, head.data);
     }
     
     private Point nearestNeighbor(TreeNode node, Point p, Point best) {
+        //if we've reached a null node, return best
         if (node == null) {
             return best;
         }
-    
+        
+        //calculate the distances
         double distToBest = p.distanceTo(best);
         double distToNode = p.distanceTo(node.data);
-    
+        
+        //if th distance to the current node is less than the distance to the currentt best point, update the best point
         if (distToNode < distToBest) {
             best = node.data;
         }
-    
+        
+        //of we ve reached a leaf node, return the current best point
         if (node.l == null && node.r == null) {
             return best;
         }
-    
+        
+        //determine which child to explore first based on their distances
         if (node.l == null || (node.r != null && node.r.data.squareDistanceTo(p) < node.l.data.squareDistanceTo(p))) {
+            //explore the right child first, updating the best point as we go
             best = nearestNeighbor(node.r, p, best);
+            //if the distance from the query point to the left child's bounding box is less than the current best distance, explore the left child as well
             if (node.l != null && node.l.data.squareDistanceTo(p) < best.squareDistanceTo(p)) {
                 best = nearestNeighbor(node.l, p, best);
             }
         } else {
+            //explore the left child first, updating the best point as we go
             best = nearestNeighbor(node.l, p, best);
+            //if the distance from the query point to the right child's bounding box is less than the current best distance, explore the right child as well
             if (node.r != null && node.r.data.squareDistanceTo(p) < best.squareDistanceTo(p)) {
                 best = nearestNeighbor(node.r, p, best);
             }
         }
-    
+        
+        //return the final best point
         return best;
     }
+    
 
 
 

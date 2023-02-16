@@ -1,4 +1,4 @@
-public class Rectangle {
+public class Rectangle{
     // instance variables to store the minimum x, y and maximum x, y coordinates of the rectangle
     private int xmin;
     private int ymin;
@@ -51,6 +51,14 @@ public class Rectangle {
         int xDiff = p.x() - x;
         int yDiff = p.y() - y;
         return xDiff * xDiff + yDiff * yDiff;
+    }
+
+    public double distanceTo(Point p){
+        int x = Math.max(Math.min(p.x(), xmax), xmin);
+        int y = Math.max(Math.min(p.y(), ymax), ymin);
+        int xDiff = p.x() - x;
+        int yDiff = p.y() - y;
+        return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
     }
 
     // method to return a string representation of the rectangle in the format [xmin, xmax] x [ymin, ymax]

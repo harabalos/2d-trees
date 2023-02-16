@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class TwoDTree{
 
     private TreeNode head;
@@ -134,9 +137,6 @@ public class TwoDTree{
         return false;
     }
 
-
-
-
     public Point nearestNeighbor(Point p) {
         //if the tree is empty, return null
         if (head == null) {
@@ -187,27 +187,49 @@ public class TwoDTree{
         //return the final best point
         return best;
     }
+
+    public List<Point> rangeSearch(Rectangle rect) {
+        List<Point> pointsInRange = new ArrayList<>();
+        rangeSearch(head, rect, pointsInRange);
+        return pointsInRange;
+    }
     
-
-
-
+    private void rangeSearch(TreeNode node, Rectangle rect, List<Point> pointsInRange) {
+        if (node == null) {
+            return;
+        }
+    
+        if (rect.contains(node.data)) {
+            pointsInRange.add(node.data);
+        }
+    
+    //     if (node.l != null && rect.intersects(node.l.data.rect())) {
+    //         rangeSearch(node.l, rect, pointsInRange);
+    //     }
+    
+    //     if (node.r != null && rect.intersects(node.l.data.rect())) {
+    //         rangeSearch(node.r, rect, pointsInRange);
+    //     }
+    // }
+    
+    } 
+    
 
     public static void main(String[] args) {
         TwoDTree tdt = new TwoDTree();
-        Point p1 = new Point(5, 4);
-        Point p2 = new Point(2, 6);
-        Point p3 = new Point(13, 3);
-        Point p4 = new Point(8, 7);
-        Point p5 = new Point(3, 1);
-        Point p6 = new Point(10, 2);
-        Point p7 = new Point(3, 0);
+        Point p1 = new Point(70, 20);
+        Point p2 = new Point(50, 40);
+        Point p3 = new Point(20, 30);
+        Point p4 = new Point(40, 70);
+
 
         tdt.insert(p1);
         tdt.insert(p2);
         tdt.insert(p3);
         tdt.insert(p4);
-        tdt.insert(p5);
-        tdt.insert(p6);
+
+        
 
     }
+
 }

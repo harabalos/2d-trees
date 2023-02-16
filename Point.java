@@ -1,4 +1,4 @@
-public class Point{
+public class Point implements PointInterface{ 
     // instance variables to store the x and y coordinates of the point
     private int x;
     private int y;

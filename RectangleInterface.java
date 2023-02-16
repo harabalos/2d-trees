@@ -1,4 +1,4 @@
-public interface RectangleInterface{
+public interface RectangleInterface {
     public int xmin(); // minimum x-coordinate of rectangle
 
     public int ymin() ;// minimum y-coordinate of rectangle

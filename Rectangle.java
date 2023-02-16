@@ -1,4 +1,4 @@
-public class Rectangle{
+public class Rectangle implements RectangleInterface{
     // instance variables to store the minimum x, y and maximum x, y coordinates of the rectangle
     private int xmin;
     private int ymin;

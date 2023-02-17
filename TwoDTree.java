@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 import java.util.Stack;
 
 public class TwoDTree implements TwoDTreeInterface{
@@ -227,5 +230,49 @@ public Stack<Point> rangeSearch(Rectangle rect) {
     
     //return the stack of points found
     return points;
+}
+
+public static void main(String[] args) {
+    try {
+        TwoDTree tdt = new TwoDTree();
+        Scanner scan = new Scanner(new File("input.txt"));
+        Scanner scanCount = new Scanner(new File("input.txt"));
+        int size = Integer.parseInt(scan.nextLine());
+        int count = -1;
+
+        while(scanCount.hasNextLine()){
+            count++;
+            scanCount.nextLine();
+        }
+        String[][] coords = new String[count][2];
+        
+        for (int i = 0; i < coords.length; i++) {
+            coords[i] = scan.nextLine().split(" ");
+        }
+
+        if(size!=count){
+            System.out.println("Invalid inputs...");
+            System.exit(0);
+        }
+
+        for (int i = 0; i < coords.length; i++) {
+            for (int j = 0; j < coords[i].length; j++) {
+                if(Integer.parseInt(coords[i][j]) > 100 || Integer.parseInt(coords[i][j]) < 0 ){
+                    System.out.println("Invalid inputs...");
+                    System.exit(0);
+                }
+            }
+        }
+
+        for (int i = 0; i < coords.length; i++) {
+            tdt.insert(new Point(Integer.parseInt(coords[i][0]), Integer.parseInt(coords[i][1])));
+        }
+
+
+        scanCount.close();
+        scan.close();
+    } catch (FileNotFoundException e) {
+        e.printStackTrace();
+    }
 }
 }

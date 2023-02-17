@@ -1,12 +1,27 @@
-public interface PointInterface  {
-    public int x(); // return the x-coordinate
+public interface PointInterface {
 
-    public int y(); // return the y-coordinate
+    /**
+     * Returns the x-coordinate of the point.
+     */
+    public int x();
 
-    public double distanceTo(Point z); // Euclidean distance between two points
+    /**
+     * Returns the y-coordinate of the point.
+     */
+    public int y();
 
-    public int squareDistanceTo(Point z); // square of the Euclidean distance
+    /**
+     * Calculates the Euclidean distance between this point and another point.
+     */
+    public double distanceTo(Point z);
 
-    // between two points
-    public String toString(); // string representation: (x, y)        
+    /**
+     * Calculates the square of the Euclidean distance between this point and another point.
+     */
+    public int squareDistanceTo(Point z);
+
+    /**
+     * Returns a string representation of the point in the format (x, y).
+     */
+    public String toString();
 }

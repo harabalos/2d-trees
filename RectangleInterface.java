@@ -1,20 +1,46 @@
-public interface RectangleInterface{
-    public int xmin(); // minimum x-coordinate of rectangle
+public interface RectangleInterface {
+    /**
+     * Returns the minimum x-coordinate of the rectangle.
+     */
+    int xmin();
 
-    public int ymin() ;// minimum y-coordinate of rectangle
+    /**
+     * Returns the minimum y-coordinate of the rectangle.
+     */
+    int ymin();
 
-    public int xmax() ;// maximum x-coordinate of rectangle
+    /**
+     * Returns the maximum x-coordinate of the rectangle.
+     */
+    int xmax();
 
-    public int ymax(); // maximum y-coordinate of rectangle
+    /**
+     * Returns the maximum y-coordinate of the rectangle.
+     */
+    int ymax();
 
-    public boolean contains(Point p); //does p belong to the rectangle?
+    /**
+     * Returns true if the rectangle contains the given point, false otherwise.
+     */
+    boolean contains(Point p);
 
-    public boolean intersects(Rectangle that); // do the two rectangles intersect?
+    /**
+     * Returns true if this rectangle intersects the given rectangle, false otherwise.
+     */
+    boolean intersects(Rectangle that);
 
-    public double distanceTo(Point p); // Euclidean distance from p to closest point in rectangle
+    /**
+     * Returns the square of the Euclidean distance from the given point to the closest point in the rectangle.
+     */
+    int squareDistanceTo(Point p);
 
-    public int squareDistanceTo(Point p); // square of Euclidean distance from p to closest point in rectangle
+    /**
+     * Returns the Euclidean distance from the given point to the closest point in the rectangle.
+     */
+    double distanceTo(Point p);
 
-    public String toString(); // string representation: [xmin, xmax] × [ymin, ymax]
-
+    /**
+     * Returns a string representation of the rectangle in the format [xmin, xmax] x [ymin, ymax].
+     */
+    String toString();
 }

@@ -4,7 +4,7 @@ public class TwoDTree implements TwoDTreeInterface{
 
     private TreeNode head;
 
-    // Implementing TreeNode
+    //mplementing TreeNode
     private static class TreeNode{
         
         private Point data;
@@ -17,22 +17,22 @@ public class TwoDTree implements TwoDTreeInterface{
         }
     }
 
-    // Constructor
+    //constructor
     public TwoDTree(){
         this.head = null;
     }
 
-    // Check if the tree is empty
+    //check if the tree is empty
     public boolean isEmpty(){
         return head == null;
     }
 
-    // Get the size of the tree
+    //get the size of the tree
     public int size(){
         return size(head);
     }
 
-    // Helper function to calculate the size of the tree
+    //helper function to calculate the size of the tree
     private int size(TreeNode node) {
         if (node == null) {
           return 0;
@@ -42,55 +42,70 @@ public class TwoDTree implements TwoDTreeInterface{
 
 
       private int compare(Point p, TreeNode node, boolean level) {
+        //if the given level is even, compare x-coordinates of the point and node's data
         if (level) {
             return p.x() - node.data.x();
         }
-        else return p.y() - node.data.y();
-    }
-
-
-      public void insert(Point p) {
-        if (p == null) {
-            throw new java.lang.NullPointerException("called insert() with a null Point");
+        //if the given level is odd, compare y-coordinates of the point and node's data
+        else {
+            return p.y() - node.data.y();
         }
+    }
+    
+
+    //method that inserts points
+    public void insert(Point p) {
         head = insert(head, p, true, new int[] {0, 0, 100, 100});
     }
     
-    private TreeNode insert(TreeNode n, Point p, boolean evenLevel, int[] coords) {
-        if (n == null) {
-            return new TreeNode(p, coords);
+
+    //Helper function
+    private TreeNode insert(TreeNode node, Point p, boolean level, int[] c) {
+        //create new node if at null node
+        if (node == null) {
+            return new TreeNode(p, c);
         }
-        
-        double cmp = compare(p, n, evenLevel);
-        
-        if (cmp < 0 && evenLevel) {
-            coords[2] = n.data.x(); // lessen x_max
-            n.l = insert(n.l, p, !evenLevel, coords);
+    
+        //get comparison value based on even or odd level
+        double comp = compare(p, node, level);
+    
+        //insert to the right if even level and x-value is greater than node x-value
+        if (comp > 0 && level) {
+            //update x_min for right child
+            c[0] = node.data.x(); 
+            //recursive call for right child
+            node.r = insert(node.r, p, !level, c); 
         }
-        
-        // Handle Nodes which should be inserted to the bottom
-        else if (cmp < 0 && !evenLevel) {
-            coords[3] = n.data.y(); // lessen y_max
-            n.l = insert(n.l, p, !evenLevel, coords);
+
+        //insert to the right if odd level and y-value is greater than node y-value
+        else if (comp > 0 && !level) {
+             //update y_min for right child
+            c[1] = node.data.y();
+            node.r = insert(node.r, p, !level, c);
         }
-        
-        // Handle Nodes which should be inserted to the right
-        else if (cmp > 0 && evenLevel) {
-            coords[0] = n.data.x(); // increase x_min
-            n.r = insert(n.r, p, !evenLevel, coords);
+
+        //insert to the left if even level and x-value is less than node x-value
+        else if (comp < 0 && level) {
+            //update x_max for left child
+            c[2] = node.data.x(); 
+            node.l = insert(node.l, p, !level, c); 
         }
-        
-        // Handle Nodes which should be inserted to the top
-        else if (cmp > 0 && !evenLevel) {
-            coords[1] = n.data.y(); // increase y_min
-            n.r = insert(n.r, p, !evenLevel, coords);
+
+        //insert to the left if odd level and y-value is less than node y-value
+        else if (comp < 0 && !level) {
+            //update y_max for left child
+            c[3] = node.data.y(); 
+            node.l = insert(node.l, p, !level, c);
         }
-        
-        else if (!n.data.equals(p))
-            n.r = insert(n.r, p, !evenLevel, coords);
-        
-        return n;
+
+        //no duplicate points are added to the tree.
+        else if (!node.data.equals(p))
+            node.r = insert(node.r, p, !level, c);
+    
+        // return the node
+        return node;
     }
+    
     
 
 
@@ -125,9 +140,6 @@ public class TwoDTree implements TwoDTreeInterface{
     }
 
     public Point nearestNeighbor(Point p) {
-        if (p == null) {
-            throw new java.lang.NullPointerException("called contains() with a null Point2D");
-        }
         //if the tree is empty, return null
         if (isEmpty()) {
             return null;
@@ -178,34 +190,47 @@ public class TwoDTree implements TwoDTreeInterface{
         return best;
     }
 
-    public Stack<Point> rangeSearch(Rectangle rect) {
-        if (rect == null) throw new java.lang.NullPointerException(
-                "called range() with a null RectHV");
-        
-        Stack<Point> points = new Stack<>();
-        
-        // Handle KdTree without a root node yet
-        if (head == null) return points;
-        
-        Stack<TreeNode> nodes = new Stack<>();
-        nodes.push(head);
-        while (!nodes.isEmpty()) {
-            
-            // Examine the next Node
-            TreeNode tmp = nodes.pop();
-            
-            // Add contained points to our points stack
-            if (rect.contains(tmp.data)) points.push(tmp.data);
-            
-            if (tmp.l != null && rect.intersects(tmp.l.rect)) {
-                nodes.push(tmp.l);
-            }
-            if (tmp.r != null && rect.intersects(tmp.r.rect)) {
-                nodes.push(tmp.r);
-            }
-        }
+
+public Stack<Point> rangeSearch(Rectangle rect) {
+
+    //Create new stack for the points
+    Stack<Point> points = new Stack<>();
+    
+    //if the tree is empty, return an empty stack
+    if (head == null) {
         return points;
     }
+    
+    //create new stack for nodes that contain points
+    Stack<TreeNode> PointNodes = new Stack<>();
+    
+    //add the head node to the stack
+    PointNodes.push(head);
+    
+    //iterat through all nodes in the stack
+    while (!PointNodes.isEmpty()) {
+        
+        //get the next node in the stack
+        TreeNode node = PointNodes.pop();
+        
+        //if the current node contains a point within the rectangle, add it to the stack
+        if (rect.contains(node.data)) points.push(node.data);
+        
+        //if the rectangle intersects with the left subtree of the current node, add the left node to the stack
+        if (node.l != null && rect.intersects(node.l.rect)) {
+            PointNodes.push(node.l);
+        }
+        
+        //if the rectangle intersects with the right subtree of the current node, add the right node to the stack
+        if (node.r != null && rect.intersects(node.r.rect)) {
+            PointNodes.push(node.r);
+        }
+    }
+    
+    //return the stack of points found
+    return points;
+}
+
 
 
     public static void main(String[] args) {

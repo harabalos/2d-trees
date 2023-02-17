@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Stack;
 
 public interface TwoDTreeInterface {
     /**
@@ -31,5 +32,5 @@ public interface TwoDTreeInterface {
      * Returns a list of points in the tree that are contained within the
      * given rectangle.
      */
-    List<Point> rangeSearch(Rectangle rect);
+    Stack<Point> rangeSearch(Rectangle rect);
 }

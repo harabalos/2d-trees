@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Stack;
 
 public class TwoDTree implements TwoDTreeInterface{
 
@@ -10,11 +9,11 @@ public class TwoDTree implements TwoDTreeInterface{
         
         private Point data;
         private TreeNode l,r;
+        private Rectangle rect;
 
-        public TreeNode(Point data){
+        public TreeNode(Point data, int[] c){
             this.data = data;
-            this.l = null;
-            this.r = null;
+            rect = new Rectangle(c[0], c[1], c[2], c[3]);
         }
     }
 
@@ -42,67 +41,55 @@ public class TwoDTree implements TwoDTreeInterface{
       }
 
 
+      private int compare(Point p, TreeNode node, boolean level) {
+        if (level) {
+            return p.x() - node.data.x();
+        }
+        else return p.y() - node.data.y();
+    }
+
+
       public void insert(Point p) {
-        // Check if the tree is empty and add the point as the root node if it is
-        if (head == null) {
-            head = new TreeNode(p);
-            return;
+        if (p == null) {
+            throw new java.lang.NullPointerException("called insert() with a null Point");
+        }
+        head = insert(head, p, true, new int[] {0, 0, 100, 100});
+    }
+    
+    private TreeNode insert(TreeNode n, Point p, boolean evenLevel, int[] coords) {
+        if (n == null) {
+            return new TreeNode(p, coords);
         }
         
-        // Start searching for the correct position to insert the new point
-        TreeNode current = head;
-        // Is used to alternate between checkin the x-coordinate and y-coordinate of the points
-        boolean isXLevel = true;
-    
-        // Keep looping until a null child node is found, which indicates the correct place to insert the new point
-        while (true) {
-            // Check if the point already exists in the tree, and return an error message if it does
-            if (current.data.x() == p.x() && current.data.y() == p.y()) {
-                System.out.println("Error: Point already exists in the tree.");
-                return;
-            }
-    
-            // Compare the x-coordinate of the point to be inserted with the x-coordinate of the current node
-            if (isXLevel) {
-                // If th point has a smaller x-coordinate, move to the left child node
-                if (p.x() < current.data.x()) {
-                    if (current.l == null) {
-                        current.l = new TreeNode(p);
-                        break;
-                    }
-                    current = current.l;
-                } 
-                // Otherwise, move to the right child node
-                else {
-                    if (current.r == null) {
-                        current.r = new TreeNode(p);
-                        break;
-                    }
-                    current = current.r;
-                }
-            } 
-            // Compare the y-coordinate of the point to be insetred with the y-coordinate of the current node
-            else {
-                // If the point has a smaller y-coordinate, move to the left child node
-                if (p.y() < current.data.y()) {
-                    if (current.l == null) {
-                        current.l = new TreeNode(p);
-                        break;
-                    }
-                    current = current.l;
-                } 
-                // Otherwise, move to the right child node
-                else {
-                    if (current.r == null) {
-                        current.r = new TreeNode(p);
-                        break;
-                    }
-                    current = current.r;
-                }
-            }
-            // Alternate betwween checking the x-coordinate and y-coordinate of the points
-            isXLevel = !isXLevel;
+        double cmp = compare(p, n, evenLevel);
+        
+        if (cmp < 0 && evenLevel) {
+            coords[2] = n.data.x(); // lessen x_max
+            n.l = insert(n.l, p, !evenLevel, coords);
         }
+        
+        // Handle Nodes which should be inserted to the bottom
+        else if (cmp < 0 && !evenLevel) {
+            coords[3] = n.data.y(); // lessen y_max
+            n.l = insert(n.l, p, !evenLevel, coords);
+        }
+        
+        // Handle Nodes which should be inserted to the right
+        else if (cmp > 0 && evenLevel) {
+            coords[0] = n.data.x(); // increase x_min
+            n.r = insert(n.r, p, !evenLevel, coords);
+        }
+        
+        // Handle Nodes which should be inserted to the top
+        else if (cmp > 0 && !evenLevel) {
+            coords[1] = n.data.y(); // increase y_min
+            n.r = insert(n.r, p, !evenLevel, coords);
+        }
+        
+        else if (!n.data.equals(p))
+            n.r = insert(n.r, p, !evenLevel, coords);
+        
+        return n;
     }
     
 
@@ -138,8 +125,11 @@ public class TwoDTree implements TwoDTreeInterface{
     }
 
     public Point nearestNeighbor(Point p) {
+        if (p == null) {
+            throw new java.lang.NullPointerException("called contains() with a null Point2D");
+        }
         //if the tree is empty, return null
-        if (head == null) {
+        if (isEmpty()) {
             return null;
         }
         
@@ -188,32 +178,35 @@ public class TwoDTree implements TwoDTreeInterface{
         return best;
     }
 
-    public List<Point> rangeSearch(Rectangle rect) {
-        List<Point> pointsInRange = new ArrayList<>();
-        rangeSearch(head, rect, pointsInRange);
-        return pointsInRange;
+    public Stack<Point> rangeSearch(Rectangle rect) {
+        if (rect == null) throw new java.lang.NullPointerException(
+                "called range() with a null RectHV");
+        
+        Stack<Point> points = new Stack<>();
+        
+        // Handle KdTree without a root node yet
+        if (head == null) return points;
+        
+        Stack<TreeNode> nodes = new Stack<>();
+        nodes.push(head);
+        while (!nodes.isEmpty()) {
+            
+            // Examine the next Node
+            TreeNode tmp = nodes.pop();
+            
+            // Add contained points to our points stack
+            if (rect.contains(tmp.data)) points.push(tmp.data);
+            
+            if (tmp.l != null && rect.intersects(tmp.l.rect)) {
+                nodes.push(tmp.l);
+            }
+            if (tmp.r != null && rect.intersects(tmp.r.rect)) {
+                nodes.push(tmp.r);
+            }
+        }
+        return points;
     }
-    
-    private void rangeSearch(TreeNode node, Rectangle rect, List<Point> pointsInRange) {
-        if (node == null) {
-            return;
-        }
-    
-        if (rect.contains(node.data)) {
-            pointsInRange.add(node.data);
-        }
-    
-    //     if (node.l != null && rect.intersects(node.l.data.rect())) {
-    //         rangeSearch(node.l, rect, pointsInRange);
-    //     }
-    
-    //     if (node.r != null && rect.intersects(node.l.data.rect())) {
-    //         rangeSearch(node.r, rect, pointsInRange);
-    //     }
-    // }
-    
-    } 
-    
+
 
     public static void main(String[] args) {
         TwoDTree tdt = new TwoDTree();
@@ -227,6 +220,7 @@ public class TwoDTree implements TwoDTreeInterface{
         tdt.insert(p2);
         tdt.insert(p3);
         tdt.insert(p4);
+        
 
         
 

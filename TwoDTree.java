@@ -77,7 +77,7 @@ public class TwoDTree implements TwoDTreeInterface{
             node.r = insert(node.r, p, !level, c); 
         }
 
-        //insert to the right if odd level and y-value is greater than node y-value
+        //insert to the right if odd level and yvalue is greater than node y-value
         else if (comp > 0 && !level) {
              //update y_min for right child
             c[1] = node.data.y();
@@ -106,38 +106,36 @@ public class TwoDTree implements TwoDTreeInterface{
         return node;
     }
     
-    
-
-
+    //method that returns true if it finds the point we are looking for
     public boolean search(Point p) {
-        //start search from the root node
         TreeNode current = head;
-    
-        //iterate the tree until the current node is not null
+        boolean level = true;
+
+        //traverse the tree until the node is found or we reach the end of the tree
         while (current != null) {
-            //compare the x coordinate of the target point with the current node's point
-            int compareX = Integer.compare(p.x(), current.data.x());
-            //compare the y-coordinate of the target point with the current node's point
-            int compareY = Integer.compare(p.y(), current.data.y());
-    
-            //if both x and y coordinates are equal to the current node's point, return true (point is found)
-            if (compareX == 0 && compareY == 0) {
+
+            //check if the current node matches the point p
+            if (current.data.equals(p)) {
                 return true;
-            } 
-            //if the target points x and y coordinates are both smaller than the current node's point, 
-            //search in the left subtree
-            else if (compareX <= 0 && compareY <= 0) {
-                current = current.l;
-            } 
-            //otherwise, search in the right subtree
-            else {
-                current = current.r;
             }
+
+            //compare the point p with the current node to determine which direction to move in
+            if (compare(p, current, level) < 0) {
+                //move to the left chil node
+                current = current.l;  
+            } else {
+                //move to the right child node
+                current = current.r;  
+            }
+
+            level = !level;  //toggle the level flag
         }
-    
-        //if the tagret point is not found, return false
+
+        //if we reac here, the point was not found in the tree
         return false;
     }
+
+
 
     public Point nearestNeighbor(Point p) {
         //if the tree is empty, return null
@@ -159,7 +157,7 @@ public class TwoDTree implements TwoDTreeInterface{
         double distToBest = p.distanceTo(best);
         double distToNode = p.distanceTo(node.data);
         
-        //if th distance to the current node is less than the distance to the currentt best point, update the best point
+        //if th distance to the current node is les than the distance to the currentt best point, update the best point
         if (distToNode < distToBest) {
             best = node.data;
         }
@@ -186,7 +184,7 @@ public class TwoDTree implements TwoDTreeInterface{
             }
         }
         
-        //return the final best point
+        //return the final  best point
         return best;
     }
 
@@ -230,25 +228,4 @@ public Stack<Point> rangeSearch(Rectangle rect) {
     //return the stack of points found
     return points;
 }
-
-
-
-    public static void main(String[] args) {
-        TwoDTree tdt = new TwoDTree();
-        Point p1 = new Point(70, 20);
-        Point p2 = new Point(50, 40);
-        Point p3 = new Point(20, 30);
-        Point p4 = new Point(40, 70);
-
-
-        tdt.insert(p1);
-        tdt.insert(p2);
-        tdt.insert(p3);
-        tdt.insert(p4);
-        
-
-        
-
-    }
-
 }

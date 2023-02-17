@@ -43,4 +43,23 @@ public class Point implements PointInterface{
     public String toString() {
         return "(" + x + ", " + y + ")";
     }
+
+    
+    @Override
+    public boolean equals(Object obj) {
+        // If the object is the same as this object, return true
+        if (obj == this) {
+            return true;
+        }
+    
+        // If the object is not an instance of the Point class, return false
+        if (!(obj instanceof Point)) {
+            return false;
+        }
+    
+        // Cast the object to a Point object and compare its x and y values with this object's x and y values
+        Point other = (Point) obj;
+        return this.x == other.x && this.y == other.y;
+    }
+    
 }

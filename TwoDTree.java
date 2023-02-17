@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class TwoDTree{
+public class TwoDTree implements TwoDTreeInterface{
 
     private TreeNode head;
 

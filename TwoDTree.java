@@ -293,8 +293,19 @@ public static void main(String[] args) {
                     System.out.println("Type the two coordinates of the new point you want to insert.");
                     System.out.print("x: ");
                     int x = iscan.nextInt();
+                    while (x < 0 || x > 100) { 
+                        System.out.println("Please type a number between 0 - 100 !");
+                        System.out.print("x: ");
+                        x = iscan.nextInt();
+                        iscan.nextLine();
+                    }
                     System.out.print("y: ");
                     int y = iscan.nextInt();
+                    while (y < 0 || y > 100) { 
+                        System.out.println("Please type a number between 0 - 100 !");
+                        System.out.print("y: ");
+                        y = iscan.nextInt();
+                    }
                     tdt.insert(new Point(x, y));
                     iscan.nextLine();
 

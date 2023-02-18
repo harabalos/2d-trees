@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 import java.util.Stack;
 
 public class TwoDTree implements TwoDTreeInterface{
@@ -227,5 +230,247 @@ public Stack<Point> rangeSearch(Rectangle rect) {
     
     //return the stack of points found
     return points;
+}
+
+public static void main(String[] args) {
+    try {
+        //scanner for reading the input file
+        Scanner scan = new Scanner(new File("input.txt"));
+        //scanner for counting the number of lines in the input file
+        Scanner scanCount = new Scanner(new File("input.txt"));
+
+        TwoDTree tdt = new TwoDTree();
+
+        //reads the first line of the input file to get the size of the tree
+        int size = Integer.parseInt(scan.nextLine());
+
+        //counts the number of points in the input file
+        int count = -1;
+        while(scanCount.hasNextLine()){
+            count++;
+            scanCount.nextLine();
+        }
+
+        //creates a 2D array to hold the coordinates of the points
+        String[][] coords = new String[count][2];
+        
+        //reads the coordinates of the points from the input file and stores them in the coords array
+        for (int i = 0; i < coords.length; i++) {
+            coords[i] = scan.nextLine().split(" ");
+        }
+
+        //checks if the input values are valid
+        for (int i = 0; i < coords.length; i++) {
+            for (int j = 0; j < coords[i].length; j++) {
+                if(Integer.parseInt(coords[i][j]) > 100 || Integer.parseInt(coords[i][j]) < 0 || size!=count){
+                    System.out.println("Invalid inputs...");
+                    System.exit(0);
+                }
+            }
+        }
+
+        //inserts the points in the tree
+        for (int i = 0; i < coords.length; i++) {
+            tdt.insert(new Point(Integer.parseInt(coords[i][0]), Integer.parseInt(coords[i][1])));
+        }
+
+        //closes the scanners
+        scan.close();
+        scanCount.close();
+
+        //creates a scanner to read user input
+        Scanner iscan = new Scanner(System.in);
+
+
+        while (true) {
+            //display the menu options to the user
+            System.out.println("\nPlease select one of these options: ");
+            System.out.println("\n1.\tCompute the size of the tree\n2.\tInsert a new point\n3.\tSearch if a given point exists in the tree\n4.\tProvide a query rectangle\n5.\tProvide a query point\n\n0.\tEnd Program");
+            System.out.print("Option : ");
+
+            //get user input for their choice
+            int choice = iscan.nextInt(); 
+            iscan.nextLine();
+
+            //check that the user's input is within the valid range
+            while (choice < 0 || choice > 5) { 
+                System.out.println("Please type a number between 1 - 5 or 0 to end the program!");
+                System.out.print("Option : ");
+                choice = iscan.nextInt();
+                iscan.nextLine();
+            }
+
+            //use a switch statement to perform the selected action
+            switch (choice) {
+                case 1:
+                    //compute the size of the tree
+                    System.out.println("\nSize: "+tdt.size()+"\n");
+                    System.out.print("Press enter to continue: ");
+                    iscan.nextLine();
+                    break;
+
+                case 2:
+                    //insert a new point into the tree
+                    System.out.println("Type the two coordinates of the new point you want to insert.");
+                    System.out.print("x: ");
+                    int x = iscan.nextInt();
+                    //check validity of x coordinate
+                    while (x < 0 || x > 100) { 
+                        System.out.println("Please type a number between 0 - 100 !");
+                        System.out.print("x: ");
+                        x = iscan.nextInt();
+                        iscan.nextLine();
+                    }
+                    System.out.print("y: ");
+                    int y = iscan.nextInt();
+                    //check validity of y coordinate
+                    while (y < 0 || y > 100) { 
+                        System.out.println("Please type a number between 0 - 100 !");
+                        System.out.print("y: ");
+                        y = iscan.nextInt();
+                    }
+                    tdt.insert(new Point(x, y));
+                    iscan.nextLine();
+
+                    System.out.println("\nPoint inserted!");
+                    System.out.print("Press enter to continue: ");
+                    iscan.nextLine();
+
+                    break;
+                
+                case 3:
+                    //search for a point in the tree
+                    System.out.println("Type the two coordinates of the point you want to search.");
+                    System.out.print("x: ");
+                    int xs = iscan.nextInt();
+                    //check validity of x coordinate
+                    while (xs < 0 || xs > 100) { 
+                        System.out.println("Please type a number between 0 - 100 !");
+                        System.out.print("x: ");
+                        xs = iscan.nextInt();
+                        iscan.nextLine();
+                    }
+                    System.out.print("y: ");
+                    int ys = iscan.nextInt();
+                    //check validity of y coordinate
+                    while (ys < 0 || ys > 100) { 
+                        System.out.println("Please type a number between 0 - 100 !");
+                        System.out.print("y: ");
+                        ys = iscan.nextInt();
+                    }
+
+                    //if search is true print that we found it!
+                    if(tdt.search(new Point(xs, ys))) {
+                        System.out.println("Point Found!");
+                    } else {
+                        System.out.println("Point Not Found!");
+                    }
+                    iscan.nextLine();
+                    System.out.print("Press enter to continue: ");
+                    iscan.nextLine();
+
+                    break;
+
+                case 4: 
+                    //provid4 a query rectangle
+                    System.out.println("Please type the coordinates of the rectangle: ");
+                    System.out.print("xmin: ");
+                    int xmin = iscan.nextInt();
+                    //check validity of xmin coordinate
+                    while (xmin < 0 || xmin > 100) { 
+                        System.out.println("Please type a number between 0 - 100 !");
+                        System.out.print("xmin: ");
+                        xmin = iscan.nextInt();
+                        iscan.nextLine();
+                    }
+                    System.out.print("xmax: ");
+                    int xmax = iscan.nextInt();
+                    //check validity of xmax coordinate
+                    while (xmax < 0 || xmax > 100) { 
+                        System.out.println("Please type a number between 0 - 100 !");
+                        System.out.print("xmax: ");
+                        xmax = iscan.nextInt();
+                        iscan.nextLine();
+                    }
+                    System.out.print("ymin: ");
+                    int ymin = iscan.nextInt();
+                    //check validity of ymin coordinate
+                    while (ymin < 0 || ymin > 100) { 
+                        System.out.println("Please type a number between 0 - 100 !");
+                        System.out.print("ymin: ");
+                        ymin = iscan.nextInt();
+                        iscan.nextLine();
+                    }
+                    System.out.print("ymax: ");
+                    int ymax = iscan.nextInt();
+                    //check validity of ymax coordinate
+                    while (ymax < 0 || ymax > 100) { 
+                        System.out.println("Please type a number between 0 - 100 !");
+                        System.out.print("ymax: ");
+                        ymax = iscan.nextInt();
+                    }
+                    iscan.nextLine();
+        
+                    //create a rectangle from user input
+                    Rectangle r = new Rectangle(xmin, ymin, xmax, ymax);
+        
+                    //p/rint the points in the tree that fall within the rectangle
+                    System.out.print("The points are: ");
+                    System.out.println(tdt.rangeSearch(r));
+                    System.out.print("Press enter to continue: ");
+                    iscan.nextLine();
+        
+                    break;
+        
+                case 5:  
+                    //provide a query point
+                    System.out.println("Type the two coordinates of the query point. ");
+                    System.out.print("x: ");
+                    int xn = iscan.nextInt();
+                    //check validity of x coordinate
+                    while (xn < 0 || xn > 100) { 
+                        System.out.println("Please type a number between 0 - 100 !");
+                        System.out.print("x: ");
+                        xn = iscan.nextInt();
+                        iscan.nextLine();
+                    }
+                    System.out.print("y: ");
+                    int yn = iscan.nextInt();
+                    //check validity of y coordinate
+                    while (yn < 0 || yn > 100) { 
+                        System.out.println("Please type a number between 0 - 100 !");
+                        System.out.print("y: ");
+                        yn = iscan.nextInt();
+                        iscan.nextLine();
+                    }
+        
+                    //create a point object from user input
+                    Point p = new Point(xn, yn);
+        
+                    //print the nearest neighbor to the query point
+                    System.out.println("\nThe nearest neighbor is: " + tdt.nearestNeighbor(p));
+        
+                    //print the distance between the query point and its nearest neighbor
+                    System.out.println("The distance between those two points is: " + tdt.nearestNeighbor(p).distanceTo(p));
+                    iscan.nextLine();
+                    System.out.print("\nPress enter to continue: ");
+                    iscan.nextLine();
+        
+                    break;
+        
+                case 0:  
+                    //0 to end program!!
+                    iscan.close();
+                    System.exit(0);
+        
+                default:  
+                    break;
+            }
+        }
+        
+
+    } catch (FileNotFoundException e) {
+        e.printStackTrace();
+    }
 }
 }

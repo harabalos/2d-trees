@@ -20,6 +20,12 @@ How to run the project
 1. Run the TwoDTree class
 1. Type the inputs you want to calculate
 
+
+Screenshot
+------------------
+<img width="371" alt="Screenshot 2023-02-20 at 4 39 54 PM" src="https://user-images.githubusercontent.com/92236091/220136308-89edea55-f134-42c0-8c47-440a3620726b.png">
+
+
 Licence
 -------------
 This project is licensed under the terms of [MIT](LICENCE.txt) Licence
